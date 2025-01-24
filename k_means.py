@@ -13,4 +13,17 @@ def generate_points(centroids, num):
     return points
 
 points = generate_points(centroids,100)
-print(points)
+
+def plot_points(points, centroids, output_file):
+    x_points, y_points = zip(*points)
+    x_centroids, y_centroids = zip(*centroids)
+    plt.scatter(x_points, y_points, alpha=0.6, label="Generated Points", s=10)
+    plt.scatter(x_centroids, y_centroids, color='red', label="Centroids", s=100, marker='x')
+    plt.legend()
+    plt.title("Generated Points and Centroids")
+    plt.xlabel("X-axis")
+    plt.ylabel("Y-axis")
+    plt.savefig(output_file)
+    plt.show()
+    
+plot_points(points, centroids, 'points.png')
