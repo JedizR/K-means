@@ -17,8 +17,9 @@ def k_means_numpy(points, k, iterations):
         new_centroids = np.array([np.mean(cluster, axis=0) if len(cluster) > 0 else points[np.random.randint(len(points))] for cluster in clusters])
         if np.array_equal(new_centroids, centroids):
             break
-        print(new_centroids)
         centroids = new_centroids
+    for i,centroid in enumerate(centroids):
+        print(f"last_centroid {i}: {centroid}")
     return centroids, clusters
 
 centroids, clusters = k_means_numpy(data, k=4, iterations=500)
