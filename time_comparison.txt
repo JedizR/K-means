@@ -1,0 +1,2 @@
+K-Means Normal Time: 0.0019876956939697266 seconds
+K-Means NumPy Time: 0.0006589889526367188 seconds

@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import random
 import time
+import numpy as np
 
 centroids = [(random.uniform(0, 100), random.uniform(0, 100)) for _ in range(3)]
 
@@ -78,4 +79,40 @@ def plot_clusters(points, clusters, centroids, output_file):
     plt.show()
 
 plot_clusters(points, final_clusters, final_centroids, 'normal_kmeans_clusters.png')
+
+def k_means_numpy(points, k, iterations):
+    points = np.array(points)
+    centroids = points[np.random.choice(points.shape[0], k, replace=False)]
+    for _ in range(iterations):
+        distances = np.linalg.norm(points[:, np.newaxis] - centroids, axis=2)
+        clusters = [points[distances[:, i] == np.min(distances, axis=1)] for i in range(k)]
+        new_centroids = np.array([np.mean(cluster, axis=0) if len(cluster) > 0 else points[np.random.randint(len(points))] for cluster in clusters])
+        if np.array_equal(new_centroids, centroids):
+            break
+        centroids = new_centroids
+    return centroids, clusters
+
+start_time_numpy = time.time()
+final_centroids_numpy, final_clusters_numpy = k_means_numpy(points, k=3, iterations=500)
+end_time_numpy = time.time()
+print("K-Means NumPy Time:", end_time_numpy - start_time_numpy, "seconds")
+
+with open("time_comparison.txt", "w") as file:
+    file.write(f"K-Means Normal Time: {end_time - start_time} seconds\n")
+    file.write(f"K-Means NumPy Time: {end_time_numpy - start_time_numpy} seconds\n")
+
+def plot_clusters_numpy(points, clusters, centroids, output_file):
+    colors = ["orange", "green", "blue"]
+    for i, cluster in enumerate(clusters):
+        if len(cluster) > 0:
+            plt.scatter(cluster[:, 0], cluster[:, 1], alpha=0.6, label=f"Cluster {i + 1}", s=10, color=colors[i])
+    plt.scatter(centroids[:, 0], centroids[:, 1], color='red', label="Centroids", s=100, marker='x')
+    plt.legend()
+    plt.title("NumPy K-Means Plot")
+    plt.xlabel("X-axis")
+    plt.ylabel("Y-axis")
+    plt.savefig(output_file)
+    plt.show()
+    
+plot_clusters_numpy(points, final_clusters_numpy, final_centroids_numpy, 'numpy_kmeans_clusters.png')
 
